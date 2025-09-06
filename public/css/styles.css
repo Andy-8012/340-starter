@@ -24,35 +24,123 @@ header a {
 
 nav ul {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   text-align: center;
+  align-items: center;
   background-color: black;
   color: white;
   list-style-type: none;
+  padding: 10px;
 }
 
 .heroContainer {
-  position: relative;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
   width: 100%;
+  justify-items: center;
+  align-items: center;
 }
 
 .heroImage {
+  grid-column: 1/11;
+  grid-row: 1/11;
   width: 100%;
   height: auto;
   display: block;
+  max-width: 600px;
 }
 
 .heroTextBox {
-  position: absolute;
-  top: 5%;
-  left: 5%;
-  background-color: rgba(255, 255, 255, .50);
+  grid-column: 1/4;
+  grid-row: 2/9;
+  background-color: rgba(255, 255, 255, 0.788);
+  box-sizing: border-box;
+  color: blue;
+}
+
+.heroTextBox p,
+.heroTextBox h1 {
+  margin: 10px;
+  font-size: 1.5rem;
+}
+
+button {
+  visibility: hidden;
+  align-self: center;
+  width: 100%;
+  padding: 5px, auto;
+}
+
+img {
+  visibility: visible;
+  width: 100%;
+  padding: 5px, auto;
 }
 
 header,
 footer,
 nav,
-body {
+body,
+main {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 5px;
+}
+
+.mainContent {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.upgrades {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.upgrades h1 {
+  grid-column: 1/3;
+}
+
+.imageLink {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  border: 1px solid blue;
+}
+
+.imageLink img {
+  display: block;
+  width: 75%;
+  height: auto;
+  margin: auto;
+}
+
+.imageLink a {
+  display: block;
+  margin-top: 10px;
+}
+
+.reviews {
+  display: flex;
+  flex-direction: column;
+}
+
+.reviews ul {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  font-size: 1.5rem;
+}
+
+
+@media only screen and (max-width: 600px) {
+  .mainContent {
+    display: flex;
+    flex-direction: column;
+  }
 }
