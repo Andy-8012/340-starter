@@ -22,7 +22,7 @@ header a {
   font-weight: bold;
 }
 
-nav ul {
+.navul {
   display: flex;
   justify-content: space-around;
   text-align: center;
