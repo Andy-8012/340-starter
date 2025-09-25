@@ -57,6 +57,46 @@ Util.buildClassificationGrid = async function (data) {
     return grid
 }
 
+/* **************************************
+* Build the vehicle view HTML
+* ************************************ */
+Util.buildVehicleDetails = async function (data) {
+    let div
+    let inv_id = data[0].inv_id
+    let inv_make = data[0].inv_make
+    let inv_model = data[0].inv_model
+    let inv_year = data[0].inv_year
+    let inv_description = data[0].inv_description
+    let inv_image = data[0].inv_image
+    let inv_thumbnail = data[0].inv_thumbnail
+    let inv_price = data[0].inv_price
+    let formattedPrice = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+    }).format(inv_price)
+    let inv_miles = data[0].inv_miles
+    let inv_color = data[0].inv_color
+    let calssification_id = data[0].calssification_id
+    if (data.length > 0) {
+        div = '<div id="vehicle-details">'
+
+        div += '<img src="' + inv_image + '" alt ="vehicleimage">'
+        div += '<div class="vehicle-info">'
+        div += '<h2>' + inv_year + ' ' + inv_make + ' ' + inv_model + '</h2>'
+        div += '<p>Price: ' + formattedPrice + '</p>'
+        div += '<p>Mileage: ' + inv_miles.toLocaleString('en-US') + '</p>'
+        div += '<p>Description: ' + inv_description + '</p>'
+        div += '</div>'
+
+        div += '</div>'
+    } else {
+        div = '<p class="notice">Sorry, no matching vehicles could be found.</p>'
+    }
+    return div
+
+}
+
+
 /* ****************************************
  * Middleware For Handling Errors
  * Wrap other function in this for 
