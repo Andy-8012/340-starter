@@ -1,5 +1,6 @@
 const utilities = require(".")
 const accountModel = require("../models/account-model")
+const invModel = require("../models/inventory-model")
 const { body, validationResult } = require("express-validator")
 const validate = {}
 
@@ -125,6 +126,137 @@ validate.checkLoginData = async (req, res, next) => {
             title: "Login",
             nav,
             account_email,
+        })
+        return
+    }
+    next()
+}
+
+/*  **********************************
+  *  Add Classificaton Data Validation Rules
+  * ********************************* */
+validate.addClassificationRules = () => {
+    return [
+        // firstname is required and must be string
+        body("classification_name")
+            .trim()
+            .escape()
+            .notEmpty()
+            .matches(/^[a-zA-Z0-9]+$/)
+            .withMessage("No spaces or special characters allowed. Use only letters and numbers.") // on error this message is sent.
+            .custom(async (classification_name) => {
+                const classificationExisits = await invModel.checkExistingClassification(classification_name)
+                if (classificationExisits) {
+                    throw new Error("Classification already exisits. Please enter a different Classification.")
+                }
+            }),
+    ]
+}
+
+validate.checkClassificationData = async (req, res, next) => {
+    const { classification_name } = req.body
+    let errors = []
+    errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        let nav = await utilities.getNav()
+        res.render("inventory/add-classification", {
+            errors,
+            title: "Add Classification",
+            nav,
+            classification_name,
+        })
+        return
+    }
+    next()
+}
+
+validate.addInventoryRules = () => {
+    return [
+        // Vehicle Make: required, alphanumeric and spaces
+        body("inv_make")
+            .trim()
+            .escape()
+            .notEmpty()
+            .matches(/^[A-Za-z0-9 ]+$/)
+            .withMessage("Vehicle make can only contain letters, numbers, and spaces."),
+
+        // Vehicle Model: required, alphanumeric and spaces
+        body("inv_model")
+            .trim()
+            .escape()
+            .notEmpty()
+            .matches(/^[A-Za-z0-9 ]+$/)
+            .withMessage("Vehicle model can only contain letters, numbers, and spaces."),
+
+        // Vehicle Year: required, exactly 4 digits
+        body("inv_year")
+            .trim()
+            .escape()
+            .notEmpty()
+            .matches(/^\d{4}$/)
+            .withMessage("Vehicle year must be exactly 4 digits."),
+
+        // Vehicle Description: required
+        body("inv_description")
+            .trim()
+            .escape()
+            .notEmpty()
+            .withMessage("Vehicle description is required."),
+
+        // Vehicle Price: required, digits only, max 9 digits
+        body("inv_price")
+            .trim()
+            .escape()
+            .notEmpty()
+            .matches(/^\d{1,9}$/)
+            .withMessage("Vehicle price must be digits only, up to 9 digits."),
+
+        // Vehicle Miles: required, digits only
+        body("inv_miles")
+            .trim()
+            .escape()
+            .notEmpty()
+            .matches(/^\d+$/)
+            .withMessage("Vehicle miles must be digits only."),
+
+        // Vehicle Color: required, letters only
+        body("inv_color")
+            .trim()
+            .escape()
+            .notEmpty()
+            .matches(/^[A-Za-z]+$/)
+            .withMessage("Vehicle color must contain only letters."),
+
+        // Classification ID: required
+        body("classification_id")
+            .trim()
+            .escape()
+            .notEmpty()
+            .withMessage("Vehicle classification is required."),
+    ];
+};
+
+validate.checkInventoryData = async (req, res, next) => {
+    const { inv_make, inv_model, inv_year, inv_description, inv_price, inv_miles, inv_color, classification_id } = req.body
+    let errors = []
+    errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        let nav = await utilities.getNav()
+        let classificationList = await utilities.buildClassificationList()
+        res.render("inventory/add-inventory", {
+            errors,
+            title: "Add Inventory",
+            nav,
+            inv_make,
+            inv_model,
+            inv_year,
+            inv_description,
+            inv_price,
+            inv_miles,
+            inv_color,
+            classification_id,
+            classificationList,
+
         })
         return
     }
