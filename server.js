@@ -10,6 +10,7 @@ const expressLayouts = require("express-ejs-layouts")
 const env = require("dotenv").config()
 const app = express()
 const bodyParser = require("body-parser")
+const cookieParser = require("cookie-parser")
 const static = require("./routes/static")
 const inventoryRoute = require("./routes/inventoryRoute")
 const accountRoute = require('./routes/accountRoute')
@@ -42,6 +43,12 @@ app.use(function (req, res, next) {
 // Bodyparser Set up
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
+// Cookie Parser Set up
+app.use(cookieParser())
+
+//JWT Token verification
+app.use(utilities.checkJWTToken)
 
 /* ***********************
  * View Engine and Templates
