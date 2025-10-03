@@ -7,13 +7,19 @@
 
         <!-- Main Message -->
         <%- messages() %>
+            <h2>Welcome, <%= accountData.account_firstname %>!</h2>
+            <a href="./update/<%= accountData.account_id %>">Update Account Information</a>
 
-            <% if (errors) { %>
-                <ul class="notice">
-                    <% errors.array().forEach(error=> { %>
-                        <li>
-                            <%= error.msg %>
-                        </li>
-                        <% }) %>
-                </ul>
+            <% if (accountData.account_type==='Employee' || accountData.account_type==='Admin' ) { %>
+                <h3>Inventory Management</h3>
+                <p><a href="../inv/">Go to Inventory Management</a></p>
                 <% } %>
+                    <% if (errors) { %>
+                        <ul class="notice">
+                            <% errors.array().forEach(error=> { %>
+                                <li>
+                                    <%= error.msg %>
+                                </li>
+                                <% }) %>
+                        </ul>
+                        <% } %>

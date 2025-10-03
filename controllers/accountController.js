@@ -135,5 +135,120 @@ async function buildAccountManagementView(req, res, next) {
     })
 }
 
+/* ****************************************
+*  Deliver account management view
+* *************************************** */
+async function buildUpdateAccountView(req, res, next) {
+    const account_id = parseInt(req.params.account_id)
+    let nav = await utilities.getNav()
+    const accountData = await accountModel.getAccountById(account_id)
+    res.render("account/update-account", {
+        title: "Update Account Info",
+        nav,
+        account_id,
+        account_firstname: accountData.account_firstname,
+        account_lastname: accountData.account_lastname,
+        account_email: accountData.account_email,
+        errors: null,
+    })
+}
 
-module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildAccountManagementView }
+/* ****************************************
+*  Process Account Information Update
+* *************************************** */
+async function updateAccount(req, res) {
+    let nav = await utilities.getNav()
+    const { account_firstname, account_lastname, account_email, account_id } = req.body
+
+    const updateResult = await accountModel.updateAccount(
+        account_firstname,
+        account_lastname,
+        account_email,
+        account_id
+    )
+
+    if (updateResult) {
+        req.flash(
+            "notice",
+            `Congratulations, you updated your account information.`
+        )
+        req.flash(
+            "notice",
+            `First Name: ${updateResult.rows[0].account_firstname}`
+        )
+        req.flash(
+            "notice",
+            `Last Name: ${updateResult.rows[0].account_lastname}`
+        )
+        req.flash(
+            "notice",
+            `Email: ${updateResult.rows[0].account_email}`
+        )
+        //added req.sessionsave to allow the flash messages to display before redirecting.
+        req.session.save(() => {
+            res.redirect("/account/");
+        });
+    } else {
+        req.flash("notice", "Sorry, the account update failed.")
+        res.status(501).render("account/update-account", {
+            title: "Update Account Info",
+            nav,
+            errors: null,
+        })
+    }
+}
+
+/* ****************************************
+*  Process Password Information Update
+* *************************************** */
+async function updateAccountPassword(req, res) {
+    let nav = await utilities.getNav()
+    const { account_id, account_password } = req.body
+
+    // Hash the password before storing
+    let hashedPassword
+    try {
+        // regular password and cost (salt is generated automatically)
+        hashedPassword = await bcrypt.hashSync(account_password, 10)
+    } catch (error) {
+        req.flash("notice", 'Sorry, there was an error processing the registration.')
+        res.status(500).render("account/update-account", {
+            title: "Update Account Info",
+            nav,
+            errors: null,
+        })
+    }
+
+    const updateResult = await accountModel.updateAccountPassword(
+        hashedPassword,
+        account_id
+    )
+
+    if (updateResult) {
+        req.flash(
+            "notice",
+            `Congratulations, you updated your password.`
+        )
+        //added req.sessionsave to allow the flash messages to display before redirecting.
+        req.session.save(() => {
+            res.redirect("/account/");
+        });
+    } else {
+        req.flash("notice", "Sorry, the account update failed.")
+        res.status(501).render("account/update-account", {
+            title: "Update Account Info",
+            nav,
+            errors: null,
+        })
+    }
+}
+
+async function logout(req, res) {
+    res.clearCookie("jwt")
+    res.redirect("/account/login")
+
+}
+
+
+
+module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildAccountManagementView, buildUpdateAccountView, updateAccount, updateAccountPassword, logout }

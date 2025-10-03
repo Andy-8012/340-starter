@@ -153,13 +153,23 @@ Util.checkJWTToken = (req, res, next) => {
 /* ****************************************
  *  Check Login
  * ************************************ */
-Util.checkLogin = (req, res, next) => {
-    if (res.locals.loggedin) {
-        next()
-    } else {
-        req.flash("notice", "Please log in.")
-        return res.redirect("/account/login")
-    }
-}
+Util.checkLoginWithRole = function (requiredRoles = []) {
+    return function (req, res, next) {
+        const loggedIn = res.locals.loggedin;
+        const accountType = res.locals.accountData?.account_type;
+
+        if (!loggedIn) {
+            req.flash("notice", "Please log in.");
+            return res.redirect("/account/login");
+        }
+
+        if (requiredRoles.length > 0 && !requiredRoles.includes(accountType)) {
+            req.flash("notice", "You do not have permission to view this page.");
+            return res.redirect("/account/login");
+        }
+
+        next();
+    };
+};
 
 module.exports = Util

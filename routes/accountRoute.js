@@ -39,7 +39,15 @@ router.get("/register", utilities.handleErrors(accountController.buildRegister))
 router.post('/register', regValidate.registrationRules(), regValidate.checkRegData, utilities.handleErrors(accountController.registerAccount));
 
 // Default Accout Route
-router.get("/", utilities.checkLogin, utilities.handleErrors(accountController.buildAccountManagementView));
+router.get("/", utilities.checkLoginWithRole(), utilities.handleErrors(accountController.buildAccountManagementView));
 
+// Build update account view
+router.get("/update/:account_id", utilities.checkLoginWithRole(), utilities.handleErrors(accountController.buildUpdateAccountView))
+
+router.post('/update/update-account', regValidate.accountUpdateRules(), regValidate.accountUpdateData, utilities.checkLoginWithRole(), utilities.handleErrors(accountController.updateAccount))
+
+router.post('/update/update-password', regValidate.updatePasswordRules(), regValidate.checkPasswordData, utilities.checkLoginWithRole(), utilities.handleErrors(accountController.updateAccountPassword))
+
+router.get('/logout', utilities.checkLoginWithRole(), utilities.handleErrors(accountController.logout))
 
 module.exports = router;

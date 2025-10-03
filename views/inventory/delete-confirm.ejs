@@ -1,0 +1,45 @@
+<!-- Content Heading -->
+<% if (title) { %>
+    <h1>
+        <%= title %>
+    </h1>
+    <% } else { res.redirect('/') } %>
+
+        <!-- Main Message -->
+        <%- messages() %>
+
+            <% if (errors) { %>
+                <ul class="notice">
+                    <% errors.array().forEach(error=> { %>
+                        <li>
+                            <%= error.msg %>
+                        </li>
+                        <% }) %>
+                </ul>
+                <% } %>
+
+                    <!-- Display Vehicle Details items -->
+                    <div class="login-container">
+                        <form class="login-form" id="updateForm" action="./delete-confirm" method="POST">
+                            <label for="inv_make">Vehicle Make:</label>
+                            <input type="text" id="inv_make" name="inv_make" required pattern="[A-Za-z0-9 ]+"
+                                title="Only letters, numbers, and spaces allowed" value="<%= locals.inv_make %>">
+
+                            <label for="inv_model">Vehicle Model:</label>
+                            <input type="text" id="inv_model" name="inv_model" required pattern="[A-Za-z0-9 ]+"
+                                title="Only letters, numbers, and spaces allowed" value="<%= locals.inv_model %>">
+
+                            <label for="inv_year">Vehicle Year:</label>
+                            <input type="text" id="inv_year" name="inv_year" required pattern="\d{4}"
+                                title="Enter exactly 4 digits" value="<%= locals.inv_year %>">
+
+                            <label for="inv_price">Vehicle Price:</label>
+                            <input type="text" id="inv_price" name="inv_price" required pattern="\d{1,9}"
+                                title="Only digits up to 9" value="<%= locals.inv_price %>">
+
+                            <button type="submit">Confirm Deletion - The delete is permanent.</button>
+
+                            <input type="hidden" name="inv_id" <% if(locals.inv_id) { %> value="<%= locals.inv_id %>
+                                "
+                                <% } %>>
+                    </div>
