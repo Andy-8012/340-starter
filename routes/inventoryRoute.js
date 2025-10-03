@@ -26,4 +26,14 @@ router.get("/add-inventory", utilities.handleErrors(invController.buildAddInvent
 //Route to add new inventory to database
 router.post('/add-inventory', regValidate.addInventoryRules(), regValidate.checkInventoryData, utilities.handleErrors(invController.addInventory))
 
+//Route to build clasification list in management page
+router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryJSON))
+
+//Route to build edit view
+router.get("/edit/:inv_id", utilities.handleErrors(invController.buildEditView))
+
+//Route to update the inventory item
+router.post("/edit/update", regValidate.addInventoryRules(), regValidate.checkUpdateData, utilities.handleErrors(invController.updateInventory))
+
+
 module.exports = router;

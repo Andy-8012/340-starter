@@ -132,6 +132,14 @@ validate.checkLoginData = async (req, res, next) => {
     next()
 }
 
+
+
+
+
+
+/*  **********************************
+  *  Inventory Validation functions below
+  * ********************************* */
 /*  **********************************
   *  Add Classificaton Data Validation Rules
   * ********************************* */
@@ -236,17 +244,47 @@ validate.addInventoryRules = () => {
     ];
 };
 
+// Checks Add inventory data
 validate.checkInventoryData = async (req, res, next) => {
     const { inv_make, inv_model, inv_year, inv_description, inv_price, inv_miles, inv_color, classification_id } = req.body
     let errors = []
     errors = validationResult(req)
     if (!errors.isEmpty()) {
         let nav = await utilities.getNav()
-        let classificationList = await utilities.buildClassificationList()
+        let classificationList = await utilities.buildClassificationList(classification_id)
         res.render("inventory/add-inventory", {
             errors,
             title: "Add Inventory",
             nav,
+            inv_make,
+            inv_model,
+            inv_year,
+            inv_description,
+            inv_price,
+            inv_miles,
+            inv_color,
+            classification_id,
+            classificationList,
+
+        })
+        return
+    }
+    next()
+}
+
+// Checks update inventory data
+validate.checkUpdateData = async (req, res, next) => {
+    const { inv_id, inv_make, inv_model, inv_year, inv_description, inv_price, inv_miles, inv_color, classification_id } = req.body
+    let errors = []
+    errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        let nav = await utilities.getNav()
+        let classificationList = await utilities.buildClassificationList(classification_id)
+        res.render("inventory/edit-inventory", {
+            errors,
+            title: "Edit " + inv_make + " " + inv_model,
+            nav,
+            inv_id,
             inv_make,
             inv_model,
             inv_year,

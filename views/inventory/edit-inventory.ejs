@@ -1,0 +1,73 @@
+<!-- Content Heading -->
+<% if (title) { %>
+    <h1>
+        <%= title %>
+    </h1>
+    <% } else { res.redirect('/') } %>
+
+        <!-- Main Message -->
+        <%- messages() %>
+
+            <% if (errors) { %>
+                <ul class="notice">
+                    <% errors.array().forEach(error=> { %>
+                        <li>
+                            <%= error.msg %>
+                        </li>
+                        <% }) %>
+                </ul>
+                <% } %>
+
+                    <!-- Display Vehicle Details items -->
+                    <div class="login-container">
+                        <form class="login-form" id="updateForm" action="./update" method="POST">
+                            <label for="inv_make">Vehicle Make:</label>
+                            <input type="text" id="inv_make" name="inv_make" required pattern="[A-Za-z0-9 ]+"
+                                title="Only letters, numbers, and spaces allowed" value="<%= locals.inv_make %>">
+
+                            <label for="inv_model">Vehicle Model:</label>
+                            <input type="text" id="inv_model" name="inv_model" required pattern="[A-Za-z0-9 ]+"
+                                title="Only letters, numbers, and spaces allowed" value="<%= locals.inv_model %>">
+
+                            <label for="inv_year">Vehicle Year:</label>
+                            <input type="text" id="inv_year" name="inv_year" required pattern="\d{4}"
+                                title="Enter exactly 4 digits" value="<%= locals.inv_year %>">
+
+                            <label for="inv_description">Vehicle Description:</label>
+                            <input type="text" id="inv_description" name="inv_description" required
+                                value="<%= locals.inv_description %>">
+
+                            <label for="inv_price">Vehicle Price:</label>
+                            <input type="text" id="inv_price" name="inv_price" required pattern="\d{1,9}"
+                                title="Only digits up to 9" value="<%= locals.inv_price %>">
+
+                            <label for="inv_miles">Vehicle Miles:</label>
+                            <input type="text" id="inv_miles" name="inv_miles" required pattern="\d+"
+                                title="Only digits" value="<%= locals.inv_miles %>">
+
+                            <label for="inv_color">Vehicle Color:</label>
+                            <input type="text" id="inv_color" name="inv_color" required pattern="[A-Za-z]+"
+                                title="Only letters" value="<%= locals.inv_color %>">
+
+                            <label for="classification_id">Vehicle Classification:</label>
+                            <%- classificationList %>
+
+
+                                <button type="submit" disabled>Update Inventory</button>
+
+                                <input type="hidden" name="inv_id" <% if(locals.inv_id) { %> value="<%= locals.inv_id %>
+                                    "
+                                    <% } %>>
+                                        <input type="hidden" name="inv_image" <% if(locals.inv_image) { %> value="<%=
+                                            locals.inv_image %>
+                                            "
+                                            <% } %>>
+                                                <input type="hidden" name="inv_thumbnail" <% if(locals.inv_id) { %>
+                                                value="<%= locals.inv_thumbnail %>
+                                                    "
+                                                    <% } %>>
+                        </form>
+                    </div>
+
+
+                    <script src="../../js/inv-update.js"></script>
