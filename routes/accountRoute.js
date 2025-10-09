@@ -4,6 +4,7 @@ const router = new express.Router()
 const accountController = require("../controllers/accountController")
 const utilities = require("../utilities/")
 const regValidate = require('../utilities/account-validation')
+const { route } = require("./static")
 
 // Route to build login view
 router.get("/login", utilities.handleErrors(accountController.buildLogin));
@@ -49,5 +50,13 @@ router.post('/update/update-account', regValidate.accountUpdateRules(), regValid
 router.post('/update/update-password', regValidate.updatePasswordRules(), regValidate.checkPasswordData, utilities.checkLoginWithRole(), utilities.handleErrors(accountController.updateAccountPassword))
 
 router.get('/logout', utilities.checkLoginWithRole(), utilities.handleErrors(accountController.logout))
+
+router.get("/employee-management", utilities.checkJWTToken, utilities.checkLoginWithRole(["Admin"]), utilities.handleErrors(accountController.buildEmployeeManagementView))
+
+router.get("/delete/:account_id", utilities.checkLoginWithRole(['Admin']), utilities.handleErrors(accountController.buildDeleteAccountView))
+
+router.post("/delete/delete-confirm", utilities.checkLoginWithRole(['Admin']), utilities.handleErrors(accountController.deleteAccount))
+
+
 
 module.exports = router;

@@ -45,26 +45,27 @@
                         </form>
                     </div>
 
-                    <div class="login-container">
-                        <form class="login-form" action="./update-password" method="POST">
-                            <label for="account_password">Password:</label>
-                            <div>
-                                <p>Password must be at least 12 characters long and include at least one uppercase
-                                    letter, one
-                                    number, and one special
-                                    character. Changing your password will replace your old password with the new one.
-                                </p>
-                            </div>
-                            <input type="password" id="account_password" name="account_password" required
-                                pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
-                                title="Password must be at least 12 characters long and include at least one uppercase letter, one number, and one special character.">
+                    <% if (locals.loggedInEmail===locals.account_email) { %>
+                        <div class="login-container">
+                            <form class="login-form" action="./update-password" method="POST">
+                                <label for="account_password">Password:</label>
+                                <div>
+                                    <p>Password must be at least 12 characters long and include at least one uppercase
+                                        letter, one
+                                        number, and one special
+                                        character. Changing your password will replace your old password with the new
+                                        one.
+                                    </p>
+                                </div>
+                                <form method="POST" action="/account/update-password">
+                                    <input type="password" id="account_password" name="account_password" required
+                                        pattern="^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\\s).{12,}$"
+                                        title="Password must be at least 12 characters long and include at least one uppercase letter, one number, and one special character.">
 
-                            <button type="submit">Update Password</button>
+                                    <button type="submit">Update Password</button>
 
-                            <input type="hidden" name="account_id" <% if(locals.account_id) { %> value="<%=
-                                locals.account_id %>
-                                "
-                                <% } %>>
-
-                        </form>
-                    </div>
+                                    <input type="hidden" name="account_id" value="<%= locals.account_id %>">
+                                </form>
+                                <% } %>
+                            </form>
+                        </div>

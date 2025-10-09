@@ -142,6 +142,9 @@ async function buildUpdateAccountView(req, res, next) {
     const account_id = parseInt(req.params.account_id)
     let nav = await utilities.getNav()
     const accountData = await accountModel.getAccountById(account_id)
+    const token = req.cookies.jwt;
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const loggedInEmail = decoded.account_email;
     res.render("account/update-account", {
         title: "Update Account Info",
         nav,
@@ -149,6 +152,7 @@ async function buildUpdateAccountView(req, res, next) {
         account_firstname: accountData.account_firstname,
         account_lastname: accountData.account_lastname,
         account_email: accountData.account_email,
+        loggedInEmail,
         errors: null,
     })
 }
@@ -249,6 +253,63 @@ async function logout(req, res) {
 
 }
 
+async function buildEmployeeManagementView(req, res, next) {
+    let nav = await utilities.getNav()
+    const data = await accountModel.getAccountInfoByType("Employee")
+    console.log(data)
+    let table = await utilities.buildEmployeeDetails(data)
+    res.render("./account/employee-management", {
+        title: "Employee Management",
+        nav,
+        table,
+        errors: null,
+    })
+
+}
+
+/* ****************************************
+*  Deliver account management view
+* *************************************** */
+async function buildDeleteAccountView(req, res, next) {
+    const account_id = parseInt(req.params.account_id)
+    let nav = await utilities.getNav()
+    const accountData = await accountModel.getAccountById(account_id)
+    res.render("account/delete-account", {
+        title: "Delete Account Info",
+        nav,
+        account_id,
+        account_firstname: accountData.account_firstname,
+        account_lastname: accountData.account_lastname,
+        account_email: accountData.account_email,
+        errors: null,
+    })
+}
+
+async function deleteAccount(req, res) {
+    let nav = await utilities.getNav()
+    const { account_firstname, account_lastname, account_email, account_id } = req.body
+
+    const deleteResult = await accountModel.deleteAccount(account_id)
+
+    if (deleteResult) {
+        req.flash(
+            "notice",
+            `Congratulations, you deleted ${account_firstname} ${account_lastname} from the database.`
+        )
+        res.redirect("/account/")
+    } else {
+        req.flash("notice", "Sorry, the delete failed.")
+        res.status(501).render("account/delete-confrim", {
+            title: "Delete Account Info",
+            nav,
+            errors: null,
+            account_firstname,
+            account_lastname,
+            account_email,
+            account_id,
+        })
+    }
+}
 
 
-module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildAccountManagementView, buildUpdateAccountView, updateAccount, updateAccountPassword, logout }
+module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildAccountManagementView, buildUpdateAccountView, updateAccount, updateAccountPassword, logout, buildEmployeeManagementView, buildDeleteAccountView, deleteAccount }

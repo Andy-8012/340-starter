@@ -77,4 +77,26 @@ async function getAccountById(account_id) {
     }
 }
 
-module.exports = { registerAccount, checkExistingEmail, getAccountByEmail, getAccountById, updateAccount, updateAccountPassword }
+async function getAccountInfoByType(account_type) {
+    try {
+        const data = await pool.query(
+            `SELECT * FROM public.account
+            WHERE account_type = '${account_type}'`
+        )
+        return data.rows
+    } catch (error) {
+        console.error("getAccountInfoByType error")
+    }
+}
+
+async function deleteAccount(account_id) {
+    try {
+        const sql = `DELETE FROM account WHERE account_id = $1`
+        const data = await pool.query(sql, [account_id])
+        return data
+    } catch (error) {
+        return error.message
+    }
+}
+
+module.exports = { registerAccount, checkExistingEmail, getAccountByEmail, getAccountById, updateAccount, updateAccountPassword, getAccountInfoByType, deleteAccount }

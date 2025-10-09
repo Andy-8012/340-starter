@@ -23,3 +23,17 @@
                                 <% }) %>
                         </ul>
                         <% } %>
+
+                            <% if ( accountData.account_type==='Admin' ) { %>
+                                <h3>Employee Account Management</h3>
+                                <p><a href="./employee-management">Go to Employee Management</a></p>
+                                <% } %>
+                                    <% if (errors) { %>
+                                        <ul class="notice">
+                                            <% errors.array().forEach(error=> { %>
+                                                <li>
+                                                    <%= error.msg %>
+                                                </li>
+                                                <% }) %>
+                                        </ul>
+                                        <% } %>

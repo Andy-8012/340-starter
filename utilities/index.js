@@ -120,6 +120,33 @@ Util.buildClassificationList = async function (classification_id = null) {
     return classificationList
 }
 
+/* **************************************
+* Build the vehicle view HTML
+* ************************************ */
+Util.buildEmployeeDetails = async function (data) {
+    let table = '<table id="employee-details">'
+    table += '<thead>';
+    table += '<tr><th>Employee Name</th><td>&nbsp;</td><td>&nbsp;</td></tr>';
+    table += '</thead>';
+    // Set up the table body 
+    table += '<tbody>';
+    console.log(data)
+    if (data.length > 0) {
+        data.forEach((employee) => {
+            table += `<tr><td>${employee.account_firstname} ${employee.account_lastname}</td>`;
+            table += `<td><a href='/account/update/${employee.account_id}' title='Click to update'>Modify</a></td>`;
+            table += `<td><a href='/account/delete/${employee.account_id}' title='Click to delete'>Delete</a></td></tr>`;
+
+        })
+        table += '</tbody>'
+        table += '</table>'
+    } else {
+        div = '<p class="notice">Sorry, no matching vehicles could be found.</p>'
+    }
+    return table
+
+}
+
 /* ****************************************
  * Middleware For Handling Errors
  * Wrap other function in this for 
